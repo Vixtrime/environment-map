@@ -1,0 +1,5 @@
+<script>
+    {% if view is defined %}
+        var view = {_csrf_token: '{{ csrf_token('authenticate') }}' };
+    {% endif %}
+</script>

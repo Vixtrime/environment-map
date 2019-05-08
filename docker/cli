@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+
+CMD=$1
+FILEDIR=$(readlink -f $0)
+BASEFILEDIR=$(dirname "$FILEDIR")
+SCRIPT="$PWD/$0"
+USER_ID=1000
+APP_USER=repo
+
+cd $BASEFILEDIR
+
+if [[ "${CMD}" = "help" ]] || [[ "${CMD}" = "" ]]; then
+echo -e "Usage: $0 COMMAND\n"
+echo "Commands:"
+echo "  up              start containers"
+echo "  down            stop containers"
+echo "  build           build containers"
+echo "  restart         restart containers"
+echo "  console         run symfony bin/console"
+echo "  composer        run composer in advertio_php container"
+echo "  exec            run docker-compose exec"
+echo "  node            run docker-compose advertio_node bash"
+echo "  npm             run docker-compose advertio_node {params}"
+echo -e "\n"
+
+elif [[ "${CMD}" = "up" ]]; then
+echo "Running: docker-compose up -d"
+docker-compose up -d
+
+elif [[ "${CMD}" = "down" ]]; then
+echo "Running: docker-compose down"
+docker-compose down
+
+elif [[ "${CMD}" = "build" ]]; then
+echo "Running: docker-compose build --no-cache"
+docker-compose build --no-cache
+
+elif [[ "${CMD}" = "restart" ]]; then
+echo "Running: docker-compose restart"
+docker-compose restart
+
+elif [[ "${CMD}" = "console" ]]; then
+docker-compose exec php php bin/console "${@:2}"
+
+elif [[ "${CMD}" = "exec" ]]; then
+echo "Running: docker-compose" "$@"
+docker-compose "$@"
+
+elif [[ "${CMD}" = "node" ]]; then
+echo "Running: docker-compose exec ${DOCKER_EXEC_OPTIONS} --user=${USER_ID} node bash"
+docker-compose exec ${DOCKER_EXEC_OPTIONS} --user=${USER_ID} node bash
+
+elif [[ "${CMD}" = "npm" ]]; then
+echo "Running: docker-compose exec ${DOCKER_EXEC_OPTIONS} --user=${USER_ID} node" "$@"
+docker-compose exec ${DOCKER_EXEC_OPTIONS} --user=${USER_ID} node "$@"
+
+elif [[ "${CMD}" = "composer" ]]; then
+echo "Running: docker-compose exec ${DOCKER_EXEC_OPTIONS} --user=${USER_ID} php php /usr/local/bin/composer" "${@:2}"
+docker-compose exec ${DOCKER_EXEC_OPTIONS} --user=${USER_ID} php php /usr/bin/composer "${@:2}"
+
+fi

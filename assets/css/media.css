@@ -1,0 +1,22 @@
+/* Large screens ----------- */
+@media only screen and (min-width: 1824px) {
+    .modal-dialog {
+        min-width: 20% !important;
+    }
+}
+
+.modal-footer{
+    text-align: center;
+    display: block !important;
+    font-size: 250% !important;
+    color: #007bff;
+}
+.modal-body{
+    padding: 0.61rem 1.5rem !important;
+}
+.access-group{
+    margin-top: 1.6rem;
+}
+.login-button{
+    font-size: 1rem !important;
+}

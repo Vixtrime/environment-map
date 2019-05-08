@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block stylesheets %}
+    <script>
+        var urls = '{{ urlArray|json_encode|raw }}';
+        var dashboard_token = '{{ csrf_token('dashboard') }}';
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div id="main"></div>
+{#    {{ url('dashboard_main') }}#}
+{#    {{ csrf_token('authenticate') }}#}
+{% endblock %}
+
+{% block javascripts %}
+    {#    {{ encore_entry_script_tags('userSettings') }}#}
+    {{ encore_entry_script_tags('main') }}
+{#    </script>#}
+{% endblock %}

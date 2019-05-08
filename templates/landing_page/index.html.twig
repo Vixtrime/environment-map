@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello LandingPageController!{% endblock %}
+
+{% block body %}
+{#    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">#}
+    <div id="landing"></div>
+{% endblock %}
+
+{% block javascripts %}
+{#    <script src="{{ asset('build/base.js') }}"></script>#}
+{#    <script src="{{ asset('build/landing.js') }}"></script>#}
+    {{ encore_entry_script_tags('landing') }}
+{% endblock %}

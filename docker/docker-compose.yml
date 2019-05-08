@@ -1,0 +1,77 @@
+version: '3.3'
+services:
+    db:
+        container_name: advertio_db
+        image: mysql
+        command: ["--default-authentication-plugin=mysql_native_password"]
+        networks:
+            advertio_net:
+                ipv4_address: 174.28.1.1
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: advision_db
+            MYSQL_USER: advert
+            MYSQL_PASSWORD: xhVcDqQrsS5ctw4jF3yajTze
+    php:
+        container_name: advertio_php
+        build: ./php-fpm
+        tty: true
+        networks:
+            advertio_net:
+                ipv4_address: 174.28.1.2
+        volumes:
+            - ../:/var/www/symfony:cached
+            - ../var/log:/var/www/symfony/var/log:cached
+        links:
+            - db
+    nginx:
+        container_name: advertio_nginx
+        build: ./nginx
+        tty: true
+        networks:
+            advertio_net:
+                ipv4_address: 174.28.1.3
+        links:
+            - php
+        volumes:
+            - ./logs/nginx:/var/log/nginx:cached
+            - ../:/var/www/symfony:cached
+    elk:
+        container_name: advertio_elk
+        image: willdurand/elk
+        networks:
+            advertio_net:
+                ipv4_address: 174.28.1.4
+        volumes:
+            - ./elk/logstash:/etc/logstash:cached
+            - ./elk/logstash/patterns:/opt/logstash/patterns:cached
+            - ./logs/symfony:/var/www/symfony/var/log:cached
+            - ./logs/nginx:/var/log/nginx:cached
+
+    node:
+        container_name: advertio_node
+        image: node:10
+        tty: true
+        networks:
+            advertio_net:
+                ipv4_address: 174.28.1.5
+        volumes:
+            - ../:/html
+        working_dir: /html
+
+    phpmyadmin:
+        container_name: advertio_phpmyadmin
+        image: phpmyadmin/phpmyadmin:4.8.5
+        networks:
+            advertio_net:
+                ipv4_address: 174.28.1.6
+        depends_on:
+            - db
+
+networks:
+    advertio_net:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 174.28.0.0/16
