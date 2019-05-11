@@ -5,9 +5,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\SessionsHistoryRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\SessionDataRepository")
  */
-class SessionsHistory
+class SessionData
 {
     /**
      * @ORM\Id()
@@ -16,11 +16,6 @@ class SessionsHistory
      */
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Session", inversedBy="sessionsHistories")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $session;
 
     /**
      * @ORM\Column(type="integer")
@@ -32,29 +27,24 @@ class SessionsHistory
      */
     private $coordinates = [];
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Session", inversedBy="sessionData")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $session;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Sensor", inversedBy="sessionsHistories")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Sensor", inversedBy="sessionData")
      * @ORM\JoinColumn(nullable=false)
      */
     private $sensor;
+
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getSession(): ?Session
-    {
-        return $this->session;
-    }
-
-    public function setSession(?Session $session): self
-    {
-        $this->session = $session;
-
-        return $this;
-    }
 
     public function getSensorData(): ?int
     {
@@ -80,6 +70,17 @@ class SessionsHistory
         return $this;
     }
 
+    public function getSession(): ?Session
+    {
+        return $this->session;
+    }
+
+    public function setSession(?Session $session): self
+    {
+        $this->session = $session;
+
+        return $this;
+    }
 
     public function getSensor(): ?Sensor
     {
@@ -92,4 +93,5 @@ class SessionsHistory
 
         return $this;
     }
+
 }

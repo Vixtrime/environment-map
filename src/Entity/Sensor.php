@@ -29,13 +29,14 @@ class Sensor
     private $unit;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\SessionsHistory", mappedBy="sensor")
+     * @ORM\OneToMany(targetEntity="App\Entity\SessionData", mappedBy="sensor")
      */
-    private $sessionsHistories;
+    private $sessionData;
+
 
     public function __construct()
     {
-        $this->sessionsHistories = new ArrayCollection();
+        $this->sessionData = new ArrayCollection();
     }
 
 
@@ -64,33 +65,34 @@ class Sensor
     }
 
     /**
-     * @return Collection|SessionsHistory[]
+     * @return Collection|SessionData[]
      */
-    public function getSessionsHistories(): Collection
+    public function getSessionData(): Collection
     {
-        return $this->sessionsHistories;
+        return $this->sessionData;
     }
 
-    public function addSessionsHistory(SessionsHistory $sessionsHistory): self
+    public function addSessionData(SessionData $sessionData): self
     {
-        if (!$this->sessionsHistories->contains($sessionsHistory)) {
-            $this->sessionsHistories[] = $sessionsHistory;
-            $sessionsHistory->setSensor($this);
+        if (!$this->sessionData->contains($sessionData)) {
+            $this->sessionData[] = $sessionData;
+            $sessionData->setSensor($this);
         }
 
         return $this;
     }
 
-    public function removeSessionsHistory(SessionsHistory $sessionsHistory): self
+    public function removeSessionData(SessionData $sessionData): self
     {
-        if ($this->sessionsHistories->contains($sessionsHistory)) {
-            $this->sessionsHistories->removeElement($sessionsHistory);
+        if ($this->sessionData->contains($sessionData)) {
+            $this->sessionData->removeElement($sessionData);
             // set the owning side to null (unless already changed)
-            if ($sessionsHistory->getSensor() === $this) {
-                $sessionsHistory->setSensor(null);
+            if ($sessionData->getSensor() === $this) {
+                $sessionData->setSensor(null);
             }
         }
 
         return $this;
     }
+
 }

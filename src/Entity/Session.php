@@ -34,19 +34,22 @@ class Session
     private $sessionOrders;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\SessionsHistory", mappedBy="session")
-     */
-    private $sessionsHistories;
-
-    /**
      * @ORM\Column(type="boolean")
      */
     private $status;
 
-    public function __construct()
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\SessionData", mappedBy="session")
+     */
+    private $sessionData;
+
+    public function __construct($name, $description, $status)
     {
+        $this->setName($name);
+        $this->setDescription($description);
+        $this->setStatus($status);
         $this->sessionOrders = new ArrayCollection();
-        $this->sessionsHistories = new ArrayCollection();
+        $this->sessionData = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -109,37 +112,6 @@ class Session
         return $this;
     }
 
-    /**
-     * @return Collection|SessionsHistory[]
-     */
-    public function getSessionsHistories(): Collection
-    {
-        return $this->sessionsHistories;
-    }
-
-    public function addSessionsHistory(SessionsHistory $sessionsHistory): self
-    {
-        if (!$this->sessionsHistories->contains($sessionsHistory)) {
-            $this->sessionsHistories[] = $sessionsHistory;
-            $sessionsHistory->setSession($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSessionsHistory(SessionsHistory $sessionsHistory): self
-    {
-        if ($this->sessionsHistories->contains($sessionsHistory)) {
-            $this->sessionsHistories->removeElement($sessionsHistory);
-            // set the owning side to null (unless already changed)
-            if ($sessionsHistory->getSession() === $this) {
-                $sessionsHistory->setSession(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getStatus(): ?bool
     {
         return $this->status;
@@ -148,6 +120,37 @@ class Session
     public function setStatus(bool $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|SessionData[]
+     */
+    public function getSessionData(): Collection
+    {
+        return $this->sessionData;
+    }
+
+    public function addSessionData(SessionData $sessionData): self
+    {
+        if (!$this->sessionData->contains($sessionData)) {
+            $this->sessionData[] = $sessionData;
+            $sessionData->setSession($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSessionData(SessionData $sessionData): self
+    {
+        if ($this->sessionData->contains($sessionData)) {
+            $this->sessionData->removeElement($sessionData);
+            // set the owning side to null (unless already changed)
+            if ($sessionData->getSession() === $this) {
+                $sessionData->setSession(null);
+            }
+        }
 
         return $this;
     }
