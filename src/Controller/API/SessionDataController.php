@@ -23,12 +23,14 @@ class SessionDataController extends AbstractController
         $response = null;
 
         switch ($action) {
-            case 'post' : $sessionDataService->postSessionData(json_decode($request->getContent(), true));
-            break;
-            case 'get' : $sessionDataService->getSessionData($id);
-            break;
-            case 'get-active' : $sessionDataService->getActiveSessionData($id);
-
+            case 'post' :
+                $response = $sessionDataService->postSessionData(json_decode($request->getContent(), true));
+                break;
+            case 'get' :
+                $response = $sessionDataService->getSessionData($id);
+                break;
+            case 'get-active' :
+                $response = $sessionDataService->getActiveSessionData($id);
         }
 
         return new JsonResponse($response);

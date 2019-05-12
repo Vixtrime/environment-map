@@ -29,7 +29,10 @@ class SessionController extends AbstractController
                 $response = $sessionService->createSession(json_decode($request->getContent(), true));
                 break;
             case 'get':
-                $response = $sessionService->createSession($id);
+                $response = $sessionService->getSession($id, false);
+                break;
+            case 'get-active':
+                $response = $sessionService->getSession($id, true);
                 break;
             case 'close' :
                 $response = $sessionService->closeSession($id);

@@ -91,7 +91,7 @@ class SessionDataService
             }
         }
 
-        dump($dataSet);
+        return $dataSet;
     }
 
 

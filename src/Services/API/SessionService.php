@@ -27,10 +27,10 @@ class SessionService
     {
         $openedSession = $this->sessionRepository->findBy(['status' => true]);
 
-//        if ($openedSession) {
-//            $message = 'You have an opened session - ' . $openedSession[0]->getName() . '. Please, close active session before starting new.';
-//            return new JsonResponse($message);
-//        }
+        if ($openedSession) {
+            $message = 'You have an opened session - ' . $openedSession[0]->getName() . '. Please, close active session before starting new.';
+            return new JsonResponse($message);
+        }
 
         $newSession = new Session($requestData['name'], $requestData['description'], true);
 
@@ -49,19 +49,35 @@ class SessionService
     }
 
 
-    public function getSession($id)
+    /**
+     * @param $id
+     * @param $active
+     * @return mixed
+     */
+    public function getSession($id, $active)
     {
-        $session = $this->sessionRepository->findOneBy(['id' => $id]);
+        $active ? $session = $this->sessionRepository->findOneBy(['status' => true]) :
+            $session = $this->sessionRepository->findOneBy(['id' => $id]);
 
-        $response['sessionName'] = $session->getName();
-        $response['sessionId'] = $session->getId();
-        $response['sessionDescription'] = $session->getDescription();
-        $response['sessionStatus'] = $session->getStatus();
+        $response = null;
+
+        if($session){
+            $response['sessionName'] = $session->getName();
+            $response['sessionId'] = $session->getId();
+            $response['sessionDescription'] = $session->getDescription();
+            $response['sessionStatus'] = $session->getStatus();
+        } else {
+            null;
+        }
+
 
         return $response;
     }
 
-
+    /**
+     * @param $id
+     * @return array
+     */
     public function closeSession($id)
     {
         $session = $this->sessionRepository->findOneBy(['id' => $id]);
@@ -72,5 +88,4 @@ class SessionService
 
         return ['message' => 'Session was closed successfully'];
     }
-
 }

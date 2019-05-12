@@ -21,8 +21,8 @@
             <div class="col-lg-4 col-md-4 col-sm-4">
                 <div class="card">
                     <div class="card-header border-bottom">
-                        <h4 class="m-0" v-if="!sessionStatus">Начать новую сессию</h4>
-                        <h4 class="m-0" v-if="sessionStatus">Текущая сессия: {{ formData.sessionName.data }}</h4>
+                        <h5 class="m-0" v-if="!sessionStatus">Начать новую сессию</h5>
+                        <h5 class="m-0" v-if="sessionStatus">Текущая сессия: {{ formData.sessionName.data }}</h5>
                     </div>
                     <div class="card-body">
                         <div class="form-row" v-if="!sessionStatus">
@@ -38,6 +38,13 @@
                                 <div class="invalid-feedback"></div>
                             </div>
                         </div>
+                        <div class="form-row" v-if="sessionStatus">
+                            <div class="form-group col-md-12">
+                                {{ formData.sessionDescription.data}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body border-top">
                         <div class="form-group col-md-12 m-0" v-if="sessionStatus">
                             <button type="button" class="btn btn-pill btn-primary"
                                     @click.self.prevent="postSessionData">
@@ -47,7 +54,8 @@
                     </div>
                     <div class="card-footer border-top">
                         <div class="form-group col-md-12 m-0" v-if="!sessionStatus">
-                            <button type="button" class="btn btn-pill btn-primary" @click.self.prevent="getActiveSessionData">
+                            <button type="button" class="btn btn-pill btn-primary"
+                                    @click.self.prevent="createSession">
                                 Подтвердить
                             </button>
                         </div>
@@ -59,7 +67,6 @@
                                 </button>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -79,9 +86,6 @@
             LTileLayer,
             LMarker
         },
-        mounted() {
-            // this.$refs.map.mapObject.invalidateSize();
-        },
         data() {
             return {
 
@@ -96,7 +100,7 @@
                 attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
                 marker: L.latLng(47.413220, -1.219482),
 
-                dataset: dataset,
+                testDataset: dataset,
 
                 formData:
                     {
@@ -111,7 +115,40 @@
                                 invalid: ''
                             },
                     },
+
+                dataset: [],
+
             }
+        },
+        beforeCreate() {
+            axios.get('/api/v1/session/get-active').then(response => {
+                for (let field in response['data']) {
+                    if (response['data'].hasOwnProperty(field)) {
+                        if (this.formData[field]) {
+                            this.formData[field].data = response['data'][field];
+                        } else if (this.hasOwnProperty(field)) {
+                            this[field] = response['data'][field];
+                        }
+                    }
+                }
+            });
+        },
+        created() {
+            let self = this;
+
+            function refreshData() {
+
+                function query() {
+                    if (!self.sessionStatus) return;
+                    axios.get('/api/v1/session-data/get-active/1', {}).then(response => {
+                        self.dataset = response['data'];
+                    });
+                }
+
+                setInterval(query, 1000);
+            }
+
+            refreshData();
         },
         methods: {
             createSession() {
@@ -141,29 +178,12 @@
             },
             postSessionData() {
                 axios.post('/api/v1/session-data/post',
-                    this.dataset
+                    this.testDataset
                 );
             },
-            getActiveSessionData(){
-              axios.get('/api/v1/session-data/get-active/1')
+            getActiveSessionData() {
+                axios.get('/api/v1/session-data/get-active/1')
             },
-            created() {
-                // let self = this;
-                //
-                // function refreshData() {
-                //
-                //     function query() {
-                //         if (!self.sessionStatus) return;
-                //         axios.get('/dashboard/session/get', {}).then(response => {
-                //             console.log(response);
-                //         });
-                //     }
-                //
-                //     setInterval(query, 1000);
-                // }
-                //
-                // refreshData();
-            }
         }
     }
 </script>

@@ -7,27 +7,15 @@ Encore
 
     .addStyleEntry('styles', './assets/css/app.scss')
 
-    // .copyFiles({from: './assets/images'})
-
     .autoProvidejQuery()
 
     .enableSassLoader()
 
     .enableVueLoader()
 
-    // .addEntry('app', './assets/js/index.js')
-
     .addEntry('landing', './assets/js/modules/landing/landing.js')
 
-    // .addEntry('userSettings', './assets/js/modules/user_settings/userSettings.js')
-
-    // .addEntry('sidebar', './assets/js/modules/dashboard/sidebar/sidebar.js')
-
     .addEntry('main', './assets/js/modules/dashboard/main/main.js')
-
-    .configureCssLoader(options => {
-        // options.modules = true;
-    })
 
     .enableBuildNotifications()
 
