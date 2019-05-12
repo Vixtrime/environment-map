@@ -18,7 +18,7 @@ class SessionData
 
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      */
     private $sensor_data;
 
@@ -51,7 +51,7 @@ class SessionData
         return $this->sensor_data;
     }
 
-    public function setSensorData(int $sensor_data): self
+    public function setSensorData(float $sensor_data): self
     {
         $this->sensor_data = $sensor_data;
 
