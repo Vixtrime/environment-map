@@ -17,6 +17,10 @@ class SessionDataService
     private $em;
     private $test;
 
+    /**
+     * SessionDataService constructor.
+     * @param EntityManagerInterface $em
+     */
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -25,27 +29,31 @@ class SessionDataService
         $this->sensorRepository = $this->em->getRepository(Sensor::class);
     }
 
-
+    /**
+     * @param $requestData
+     * @return string
+     */
     public function postSessionData($requestData)
     {
-        dump($requestData);
+
         $sensors = $this->sensorRepository->findAll();
         $activeSession = $this->sessionRepository->findOneBy(['status' => true]);
 
-        foreach ($requestData as $dataField) {
+        foreach ($requestData as $dataset) {
 
-            foreach ($dataField as $sensor => $sensorData) {
+            $coordinates = $dataset['coordinates'];
 
-                $sessionData = new sessionData;
-                $sessionData->setSensor($this->getDesiredSensor($sensors, $sensor));
-                $sessionData->setSession($activeSession);
+            foreach ($dataset['data'] as $sensor => $data) {
 
-                foreach ($sensorData as $sensorData => $coordinates) {
-                    $sessionData->setSensorData($sensorData);
-                    $sessionData->setCoordinates($coordinates);
-                }
+                $sessionDataField = new sessionData
+                (
+                    $data,
+                    $coordinates,
+                    $activeSession,
+                    $this->getDesiredSensor($sensors, $sensor)
+                );
 
-                $this->em->persist($sessionData);
+                $this->em->persist($sessionDataField);
             }
         }
 
@@ -53,7 +61,63 @@ class SessionDataService
         return "Data was sent successfully";
     }
 
+    /**
+     * @param $id
+     * @return SessionData[]|object[]
+     */
+    public function getSessionData($id)
+    {
+        return $this->sessionDataRepository->findBy(['id' => $id]);
+    }
 
+    /**
+     * @param $sessId
+     * @return array
+     */
+    public function getActiveSessionData($sessId)
+    {
+        $datasetArray = [];
+        $currentSessionData = $this->sessionDataRepository->findBy(['session' => $sessId]);
+
+        foreach ($currentSessionData as $sessionDataField) {
+
+            $coordinates = $sessionDataField->getCoordinates();
+            $sensor = $sessionDataField->getSensor()->getName();
+            $key = $this->getCoordinateIfExist($datasetArray, $sessionDataField->getCoordinates());
+            if ($key === 'not exist') {
+                $datasetArray[] =
+                    [
+                        'coordinates' => $coordinates,
+                        'data' => [$sensor => $sessionDataField->getSensorData()]
+                    ];
+            } else {
+                $datasetArray[$key]['data'][$sensor] = $sessionDataField->getSensorData();
+            }
+        }
+        return $datasetArray;
+    }
+
+    /**
+     * @param $datasetArray
+     * @param $searchCoordinates
+     * @return int|string
+     */
+    private function getCoordinateIfExist($datasetArray, $searchCoordinates)
+    {
+        foreach ($datasetArray as $datasetKey => $datasetData) {
+
+            if ($datasetData['coordinates'] && $datasetData['coordinates'] == $searchCoordinates) {
+                return $datasetKey;
+            }
+        }
+        return 'not exist';
+    }
+
+    /**
+     * @param $sensors
+     * @param $desiredSensor
+     * @return mixed|null
+     */
     private function getDesiredSensor($sensors, $desiredSensor)
     {
 
@@ -63,62 +127,5 @@ class SessionDataService
             }
         }
         return null;
-    }
-
-
-    public function getSessionData($id)
-    {
-        return $this->sessionDataRepository->findBy(['id' => $id]);
-    }
-
-
-    public function getActiveSessionData($sessId)
-    {
-        $dataSet = [];
-        $currentSessionData = $this->sessionDataRepository->findBy(['session' => $sessId]);
-
-        foreach ($currentSessionData as $sessionDataField) {
-
-            $pointSensor = $sessionDataField->getSensor()->getName();
-            $sensorData = [$sessionDataField->getSensorData() => $sessionDataField->getCoordinates()];
-
-            $key = $this->getCoordinateIfExist($dataSet, $sessionDataField->getCoordinates());
-
-            if ($key === 'not exist') {
-                $dataSet[] = [$pointSensor => $sensorData];
-            } else {
-                $dataSet[$key][$pointSensor] = $sensorData;
-            }
-        }
-
-        return $dataSet;
-    }
-
-
-    private function getCoordinateIfExist($dataSet, $searchCoordinates)
-    {
-        foreach ($dataSet as $dataSetKey => $dataSetValue) {
-
-            if ($this->isCoordinatesExist($dataSetValue, $searchCoordinates)) {
-                return $dataSetKey;
-            }
-        }
-        return 'not exist';
-    }
-
-
-    private function isCoordinatesExist($array, $searchCoordinates)
-    {
-        foreach ($array as $sensorData) {
-            if ($searchCoordinates == $sensorData) {
-                return true;
-            } else if (is_array($sensorData)) {
-                if ($this->isCoordinatesExist($sensorData, $searchCoordinates)) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        }
     }
 }

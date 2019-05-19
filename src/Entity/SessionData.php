@@ -39,6 +39,13 @@ class SessionData
      */
     private $sensor;
 
+    public function __construct($sensor_data, $coordinates, $session, $sensor)
+    {
+        $this->setSensorData($sensor_data);
+        $this->setCoordinates($coordinates);
+        $this->setSession($session);
+        $this->setSensor($sensor);
+    }
 
     public function getId(): ?int
     {
@@ -46,7 +53,7 @@ class SessionData
     }
 
 
-    public function getSensorData(): ?int
+    public function getSensorData(): ?float
     {
         return $this->sensor_data;
     }

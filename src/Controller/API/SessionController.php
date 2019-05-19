@@ -17,7 +17,7 @@ class SessionController extends AbstractController
      * @param $id
      * @param Request $request
      * @param SessionService $sessionService
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|null
+     * @return JsonResponse
      */
     public function sessionAction($action, $id, Request $request, SessionService $sessionService)
     {

@@ -24,58 +24,43 @@ var CurrentSession = new Vue({
 
 export var dataset = [
     {
-        Ammonia: {
-            6.123: [50.000047, 36.249384]
-        },
-        Sulfide: {
-            1.3: [50.000047, 36.249384]
-        },
-        CarbonDioxide: {
-            311: [50.000047, 36.249384]
+        coordinates: [50.000047, 36.249384],
+        data: {
+            Ammonia: 6.123,
+            Sulfide: 1.3,
+            CarbonDioxide: 311
         }
     },
     {
-        Ammonia: {
-            5.124: [49.999956, 36.248561]
-        },
-        Sulfide: {
-            1.4: [49.999956, 36.248561]
-        },
-        CarbonDioxide: {
-            422: [49.999956, 36.248561]
+        coordinates: [49.999956, 36.248561],
+        data: {
+            Ammonia: 5.124,
+            Sulfide: 1.4,
+            CarbonDioxide: 422
         }
     },
-    // {
-    //     Ammonia: {
-    //         4: [49.999637, 36.248338]
-    //     },
-    //     Sulfide: {
-    //         1.1: [49.999637, 36.248338]
-    //     },
-    //     CarbonDioxide: {
-    //         293: [49.999637, 36.248338]
-    //     }
-    // },
-    // {
-    //     Ammonia: {
-    //         5: [49.999071, 36.248839]
-    //     },
-    //     Sulfide: {
-    //         1.7: [49.999071, 36.248839]
-    //     },
-    //     CarbonDioxide: {
-    //         600: [49.999071, 36.248839]
-    //     }
-    // },
-    // {
-    //     Ammonia: {
-    //         3.4: [49.999483, 36.249585]
-    //     },
-    //     Sulfide: {
-    //         0.8: [49.999483, 36.249585]
-    //     },
-    //     CarbonDioxide: {
-    //         452: [49.999483, 36.249585]
-    //     }
-    // },
+    {
+        coordinates: [49.999637, 36.248338],
+        data: {
+            Ammonia: 4.124,
+            Sulfide: 1.187,
+            CarbonDioxide: 239
+        }
+    },
+    {
+        coordinates: [49.999071, 36.248839],
+        data: {
+            Ammonia: 2.283,
+            Sulfide: 0.288,
+            CarbonDioxide: 487
+        }
+    },
+    {
+        coordinates: [49.999483, 36.249585],
+        data: {
+            Ammonia: 8.19,
+            Sulfide: 5.902,
+            CarbonDioxide: 987
+        }
+    },
 ];

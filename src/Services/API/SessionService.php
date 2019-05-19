@@ -16,6 +16,10 @@ class SessionService
     private $em;
 
 
+    /**
+     * SessionService constructor.
+     * @param EntityManagerInterface $em
+     */
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -23,6 +27,10 @@ class SessionService
     }
 
 
+    /**
+     * @param $requestData
+     * @return JsonResponse
+     */
     public function createSession($requestData)
     {
         $openedSession = $this->sessionRepository->findBy(['status' => true]);
